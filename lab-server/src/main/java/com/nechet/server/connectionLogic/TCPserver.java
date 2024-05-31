@@ -15,14 +15,13 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 public class TCPserver {
     private static final int BUFFER_SIZE = 4096;
     private ByteBuffer buffer;
 
-    private static final String HOST = "127.0.0.1";
-    private static final int PORT = 8080;
+    private static final String HOST = "localhost";
+    private static final int PORT = 5070;
 
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
@@ -39,6 +38,7 @@ public class TCPserver {
         this.serverSocketChannel = ServerSocketChannel.open();
         this.serverSocketChannel.configureBlocking(false);
         InetSocketAddress inetSocketAddress = new InetSocketAddress(HOST, PORT);
+        System.out.println(inetSocketAddress.getAddress());
         this.serverSocketChannel.bind(inetSocketAddress);
         this.selector = initSelector();
     }
@@ -74,18 +74,18 @@ public class TCPserver {
                 read(key);
             } else if (key.isWritable()) {
                 write(key);
+            } else {
+                SaveCommand saveCommand = new SaveCommand();
+                CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
+                saveCommand.execute(description);
             }
-        }else{
-            SaveCommand saveCommand = new SaveCommand();
-            CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
-            saveCommand.execute(description);
         }
     }
     private void accept(SelectionKey key) throws IOException {
         ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
         SocketChannel socketChannel = ssc.accept();
         socketChannel.configureBlocking(false);
-        System.out.println("Подключенно: " + socketChannel.getRemoteAddress());
+        //System.out.println("Подключенно: " + socketChannel.getRemoteAddress());
         socketChannel.register(selector, SelectionKey.OP_READ);
     }
     private void read(SelectionKey key) throws IOException {
@@ -107,10 +107,13 @@ public class TCPserver {
         this.buffer.flip();
 
         AnswerRequests response = requestHandler.handleRequest(buffer);
-        System.out.println(response);
+        //System.out.println(response);
         socketChannel.register(this.selector, SelectionKey.OP_WRITE, response);
     }
     public void close() throws IOException {
+        SaveCommand saveCommand = new SaveCommand();
+        CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
+        saveCommand.execute(description);
         if (serverSocketChannel != null) {
             serverSocketChannel.close();
         }

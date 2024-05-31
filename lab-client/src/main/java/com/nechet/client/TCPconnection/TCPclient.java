@@ -12,7 +12,7 @@ public class TCPclient {
     private final String host;
     private final int port;
     private Socket socket;
-
+    private boolean isFirst = true;
     private InputStream inputStream;
 
     private OutputStream outputStream;
@@ -30,6 +30,10 @@ public class TCPclient {
 
         this.inputStream = socket.getInputStream();
         this.outputStream = socket.getOutputStream();
+        if (socket.isBound() && socket.isConnected() && isFirst) {
+            System.out.println("Cервер успешно подключился и готов к работе.");
+            isFirst = false;
+        }
     }
     public void close() throws ClosureFailedException {
         try {

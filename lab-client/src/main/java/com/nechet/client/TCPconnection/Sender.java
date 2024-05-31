@@ -19,7 +19,7 @@ public class Sender {
     }
 
 
-    public AnswerRequests sendRequest(CommandRequest request) throws IOException {
+    public AnswerRequests sendRequest(CommandRequest request) throws SocketException,IOException {
         if(Objects.equals(request.getContainer().getName(), "exit")){
             try{
                 client.close();
@@ -32,7 +32,7 @@ public class Sender {
         try {
             return (AnswerRequests) recieveObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new SocketException();
         }
 
     }
