@@ -23,7 +23,7 @@ public class SaveCommand implements BaseCommand{
     public void execute(CommandDescription d) throws FileNotFoundException{
         TreeSet<SpaceMarine> coll = SpaceMarinesManager.getInstance().getCollection();
         WriteToObject<TreeSet<SpaceMarine>> saver = new WriteJSONCollection<>();
-        String path = System.getenv(Utils.getEnv());
+        String path = Utils.getEnv();
         try {
             saver.write(path, coll);
             result+="Файл сохранен";

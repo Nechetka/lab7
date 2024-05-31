@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
         UserConsole console = new UserConsole(new Scanner(System.in));
-        TCPclient client = new TCPclient("127.0.0.1", 8080);
+        TCPclient client = new TCPclient("localhost", 5060);
         Sender sender = new Sender(client);
         Invoker invoker = new Invoker();
         while (true) {

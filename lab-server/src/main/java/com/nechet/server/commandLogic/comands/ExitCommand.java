@@ -1,6 +1,7 @@
 package com.nechet.server.commandLogic.comands;
 
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.common.util.requestLogic.RequestArgumentType;
 
 import java.io.IOException;
 
@@ -14,7 +15,10 @@ public class ExitCommand implements BaseCommand{
 
         @Override
         public void execute(CommandDescription d) throws IOException {
-        result+="клиент закрыт";
+            SaveCommand saveCommand = new SaveCommand();
+            CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
+            saveCommand.execute(description);
+            result+="клиент закрыт";
         }
 
         @Override

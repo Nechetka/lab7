@@ -18,6 +18,8 @@ import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.client.system.UserConsole;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketException;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.Scanner;
@@ -70,9 +72,11 @@ public class CommandManager {
         }catch (UnknownCommandException e){
             throw new CommandManagerException(e.getMessage());
         }catch (NullPointerException e) {
-            throw new CommandManagerException(e.toString());
+            throw new CommandManagerException("Введена пустая строка");
         } catch (CreateObjectException e) {
             throw new CommandManagerException("Проблемы во время создания объекта: "+e.getMessage());
+        } catch (SocketException e){
+            throw new CommandManagerException("Сервер упал -\\__/-\n Выйдете и перезагрузитесь через время");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
