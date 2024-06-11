@@ -4,9 +4,7 @@ import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
-import com.nechet.server.system.UserConsole;
 
-import java.util.Scanner;
 import java.util.TreeSet;
 
 public class ShowCommand implements BaseCommand{

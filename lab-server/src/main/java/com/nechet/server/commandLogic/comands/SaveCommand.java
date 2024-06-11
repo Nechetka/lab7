@@ -5,12 +5,10 @@ import com.nechet.server.fileManipulation.WriteJSONCollection;
 import com.nechet.server.fileManipulation.WriteToObject;
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.server.system.SpaceMarinesManager;
-import com.nechet.server.system.UserConsole;
 import com.nechet.server.system.Utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.TreeSet;
 
 public class SaveCommand implements BaseCommand{

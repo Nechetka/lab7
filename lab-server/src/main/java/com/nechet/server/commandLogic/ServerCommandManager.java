@@ -10,7 +10,6 @@ import com.nechet.server.exception.UnknownCommandException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Optional;

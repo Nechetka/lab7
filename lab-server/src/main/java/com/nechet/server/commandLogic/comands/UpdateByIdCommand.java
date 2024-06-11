@@ -1,18 +1,13 @@
 package com.nechet.server.commandLogic.comands;
 
-import com.nechet.common.util.exceptions.CreateObjectException;
-import com.nechet.common.util.exceptions.WrongValuesOfCommandArgumentException;
-import com.nechet.common.util.model.Creators.BaseObjectUserCreator;
+
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
-import com.nechet.server.system.UserConsole;
-import com.nechet.server.system.Utils;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.TreeSet;
 
 public class

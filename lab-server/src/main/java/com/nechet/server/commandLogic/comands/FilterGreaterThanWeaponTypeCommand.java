@@ -4,11 +4,9 @@ import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.model.Weapon;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.SpaceMarinesManager;
-import com.nechet.server.system.UserConsole;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 import java.util.TreeSet;
 
 public class FilterGreaterThanWeaponTypeCommand implements BaseCommand{
