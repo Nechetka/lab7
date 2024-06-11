@@ -2,6 +2,7 @@ package com.nechet.server.commandLogic.comands;
 
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.UserConsole;
 
@@ -17,11 +18,11 @@ public class ShowCommand implements BaseCommand{
 
     @Override
     public void execute(CommandDescription d) {
-        TreeSet<SpaceMarine> coll = SpaceMarinesManager.getInstance().getCollection();
-        if (coll.isEmpty()){
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
+        if (colMan.isEmpty()){
             result+="В коллекции нет объектов";
         } else {
-            coll.forEach(obj -> result+=obj.toString()+"\n");
+            colMan.getCollection().forEach(obj -> result+=obj.toString()+"\n");
         }
     }
 

@@ -1,8 +1,12 @@
 package com.nechet.server.commandLogic.comands;
 
 
+import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
+
+import java.util.TreeSet;
 
 
 public class InfoCommand implements BaseCommand{
@@ -13,7 +17,7 @@ public class InfoCommand implements BaseCommand{
     }
     @Override
     public void execute(CommandDescription d) {
-        var colMan = SpaceMarinesManager.getInstance();
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
         result+="Тип коллекции: "+colMan.getCollection().getClass()+"\n";
         result+="Дата создания: "+colMan.getInitDate().toString()+"\n";
         result+="Количество элементов: "+colMan.getSize()+"\n";

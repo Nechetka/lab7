@@ -2,6 +2,7 @@ package com.nechet.server.commandLogic.comands;
 
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.Utils;
 
@@ -15,10 +16,10 @@ public class RemoveLowerCommand implements BaseCommand{
     }
     @Override
     public void execute(CommandDescription d ){
-        TreeSet<SpaceMarine> coll = SpaceMarinesManager.getInstance().getCollection();
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
         SpaceMarine newMarine = d.getObjectArray().get(0);
         newMarine.setId(Utils.getNewId());
-        coll.removeIf(marine -> newMarine.getHealth() > marine.getHealth());
+        colMan.removeIf(marine -> newMarine.getHealth() > marine.getHealth());
         result+=" Удалены все обьекты меньшие заданного";
     }
 

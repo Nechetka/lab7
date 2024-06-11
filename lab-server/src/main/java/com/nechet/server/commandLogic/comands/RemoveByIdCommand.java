@@ -3,6 +3,7 @@ package com.nechet.server.commandLogic.comands;
 import com.nechet.common.util.exceptions.WrongValuesOfCommandArgumentException;
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.UserConsole;
 
@@ -19,18 +20,16 @@ public class RemoveByIdCommand implements BaseCommand{
     }
     @Override
     public void execute(CommandDescription d) throws WrongValuesOfCommandArgumentException {
-        SpaceMarinesManager colMan = SpaceMarinesManager.getInstance();
-        TreeSet<SpaceMarine> coll = colMan.getCollection();
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
         ArrayList<String> str = d.getArgs();
         long id;
         try{
             id = Long.parseLong(str.get(1));
-            if(!coll.removeIf(marine -> Objects.equals(marine.getId(), id)))
+            if(!colMan.removeIf(marine -> Objects.equals(marine.getId(), id)))
             {
                 result+="Элемента с таким Id коллекции нет";
             }
             else {
-                colMan.setCollection(coll);
                 result+="Марин успешно удален";
             }
         } catch (NumberFormatException e) {

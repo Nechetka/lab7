@@ -3,11 +3,13 @@ package com.nechet.server.commandLogic.comands;
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.model.comparators.MarineDIstanceComparator;
 import com.nechet.common.util.requestLogic.CommandDescription;
+import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.Utils;
 
 
 import java.util.Comparator;
+import java.util.TreeSet;
 
 public class AddIfMaxCommand implements BaseCommand{
     private String result ="";
@@ -15,7 +17,7 @@ public class AddIfMaxCommand implements BaseCommand{
 
     @Override
     public void execute(CommandDescription descr){
-        SpaceMarinesManager colMan = SpaceMarinesManager.getInstance();
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
         SpaceMarine newMarine = descr.getObjectArray().get(0);
         newMarine.setId(Utils.getNewId());
         Comparator<SpaceMarine> comp = new MarineDIstanceComparator();

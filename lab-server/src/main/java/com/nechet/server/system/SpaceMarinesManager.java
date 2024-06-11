@@ -2,10 +2,11 @@ package com.nechet.server.system;
 
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.model.comparators.MarineDIstanceComparator;
-import com.nechet.common.util.model.comparators.MarineHealthComparator;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Predicate;
 
 public class SpaceMarinesManager implements CollectionReceiver<TreeSet<SpaceMarine>, SpaceMarine> {
     static private SpaceMarinesManager collection;
@@ -15,27 +16,28 @@ public class SpaceMarinesManager implements CollectionReceiver<TreeSet<SpaceMari
         }
         return collection;
     }
-    private TreeSet<SpaceMarine> marines;
+    private CopyOnWriteArraySet<SpaceMarine> marines;
     private final Date initDate;
 
     private SpaceMarinesManager() {
-        marines = new TreeSet<>();
+        marines = new CopyOnWriteArraySet<>();
         initDate = Date.from(Instant.now());
     }
 
     @Override
     public TreeSet<SpaceMarine> getCollection() {
-        return marines;
+        return new TreeSet<>(marines);
     }
 
     @Override
     public void setCollection(TreeSet<SpaceMarine> value) {
-        this.marines = value;
+        this.marines = new CopyOnWriteArraySet<>(value);
     }
 
     @Override
     public void addElementToCollection(SpaceMarine value) {
         this.marines.add(value);
+        baseSort();
     }
 
     @Override
@@ -44,8 +46,8 @@ public class SpaceMarinesManager implements CollectionReceiver<TreeSet<SpaceMari
     }
 
     @Override
-    public void sort() {
-        TreeSet<SpaceMarine> sortedMarines = new TreeSet<>();
+    public void baseSort() {
+        CopyOnWriteArraySet<SpaceMarine> sortedMarines = new CopyOnWriteArraySet<>();
 
         for (Iterator<SpaceMarine> obj = marines.stream().sorted(new MarineDIstanceComparator()).iterator(); obj.hasNext(); ) {
             SpaceMarine sortedItem = obj.next();
@@ -70,5 +72,15 @@ public class SpaceMarinesManager implements CollectionReceiver<TreeSet<SpaceMari
     }
     public SpaceMarine getMaxElement(Comparator<SpaceMarine> comparator){
         return getCollection().stream().max(comparator).orElse(null);
+    }
+
+    @Override
+    public boolean removeIf(Predicate<? super SpaceMarine> predicate) {
+        return marines.removeIf(predicate);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return marines.isEmpty();
     }
 }

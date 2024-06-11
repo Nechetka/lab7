@@ -19,7 +19,7 @@ public class Sender {
     }
 
 
-    public AnswerRequests sendRequest(CommandRequest request) throws SocketException,IOException {
+    public AnswerRequests sendRequest(CommandRequest request) throws IOException {
         if(Objects.equals(request.getContainer().getName(), "exit")){
             try{
                 sendCommand(request);
