@@ -5,6 +5,8 @@ import com.nechet.common.util.model.comparators.MarineHealthComparator;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
+
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -16,12 +18,16 @@ public class PrintFieldAscendingHealthCommand implements BaseCommand {
         return result;
     }
     @Override
-    public void execute(CommandDescription d) {
+    public void execute(CommandDescription d)  {
         CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
         Comparator<SpaceMarine> healthComp = new MarineHealthComparator();
         if (colMan.getSize()>0){
-        colMan.getCollection().stream().sorted(healthComp).forEach(obj -> result+=obj.getHealth()+" ");
-        result+="\n";
+            try {
+                colMan.getCollection().stream().sorted(healthComp).forEach(obj -> result+=obj.getHealth()+" ");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            result+="\n";
         }else{
             result+="В коллекции нет объектов";
         }

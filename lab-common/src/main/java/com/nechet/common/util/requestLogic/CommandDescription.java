@@ -16,15 +16,18 @@ public class CommandDescription implements Serializable {
     private final RequestArgumentType types;
     private ArrayList<String> args = new ArrayList<>();
     private final ArrayList<SpaceMarine> objectArray = new ArrayList<>();
-
+    private String login;
+    private String password;
 
     public CommandDescription(String name, RequestArgumentType types) {
         this.name = name;
         this.types = types;
     }
 
-    public void setAll(String[] args) throws WrongValuesOfCommandArgumentException, CreateObjectException {
+    public void setAll(String[] args,String login,String password) throws WrongValuesOfCommandArgumentException {
         try {
+            this.login=login;
+            this.password=password;
             this.args.add(this.name);
             if (2 < args.length || (args.length==1 && types.compareTo(NO_ARGS)!=0)) {
                 throw new WrongValuesOfCommandArgumentException("Неверное количество аргументов команды");
@@ -69,5 +72,11 @@ public class CommandDescription implements Serializable {
     }
     public ArrayList<String> getArgs(){
         return this.args;
+    }
+    public String getLogin(){
+        return login;
+    }
+    public String getPassword(){
+        return password;
     }
 }

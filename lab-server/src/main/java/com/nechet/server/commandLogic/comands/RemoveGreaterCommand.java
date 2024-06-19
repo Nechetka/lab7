@@ -3,9 +3,11 @@ package com.nechet.server.commandLogic.comands;
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
+import com.nechet.server.system.SpaceMarinesDBManager;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.Utils;
 
+import java.sql.SQLException;
 import java.util.TreeSet;
 
 public class RemoveGreaterCommand implements BaseCommand{
@@ -17,10 +19,14 @@ public class RemoveGreaterCommand implements BaseCommand{
 
     @Override
     public void execute(CommandDescription d){
-        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
+        SpaceMarinesDBManager colMan = new SpaceMarinesDBManager(d.getLogin());
         SpaceMarine newMarine = d.getObjectArray().get(0);
         newMarine.setId(Utils.getNewId());
-        colMan.removeIf(marine -> newMarine.getHealth() < marine.getHealth());
+        try {
+            colMan.removeIf("health > "+newMarine.getHealth());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         result+="Удалены все объекты больше полученного";
     }
 

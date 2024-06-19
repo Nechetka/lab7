@@ -17,6 +17,8 @@ public class RequestHandler {
             command = serializer.deserializeObject(buffer);
             System.out.println("Получено: " + command.getClass());
             ServerCommandManager manager = new ServerCommandManager();
+            System.out.println(command.getContainer().getName());
+            System.out.println(command.getContainer().getLogin());
             return manager.executer(command.getContainer());
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -4,8 +4,10 @@ package com.nechet.server.commandLogic.comands;
 import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
+import com.nechet.server.system.SpaceMarinesDBManager;
 import com.nechet.server.system.SpaceMarinesManager;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.TreeSet;
@@ -19,14 +21,14 @@ UpdateByIdCommand implements BaseCommand {
     }
     @Override
     public void execute(CommandDescription d){
-        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
+        SpaceMarinesDBManager colMan = new SpaceMarinesDBManager(d.getLogin());
         ArrayList<String> str = d.getArgs();
         long id;
         try{
             id = Long.parseLong(str.get(1));
-            if(!colMan.removeIf(marine -> Objects.equals(marine.getId(), id)))
+            if(!colMan.removeId(id))
             {
-                result+="Элемента с таким Id коллекции нет";
+                result+="Элемент с таким Id не ваш";
             }
             else{
                 SpaceMarine updateMarine = d.getObjectArray().get(0);
@@ -36,6 +38,8 @@ UpdateByIdCommand implements BaseCommand {
             }
         } catch (NumberFormatException e) {
             result+=("Неправильный ввод значения Id. Попробуйте заново.");
+        } catch (SQLException e) {
+            result+="Элемента с таким id нет";
         }
 
     }

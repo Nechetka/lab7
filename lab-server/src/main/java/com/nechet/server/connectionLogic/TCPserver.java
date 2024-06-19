@@ -3,7 +3,6 @@ package com.nechet.server.connectionLogic;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.common.util.requestLogic.RequestArgumentType;
 import com.nechet.common.util.requestLogic.Requests.AnswerRequests;
-import com.nechet.server.commandLogic.comands.SaveCommand;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,19 +13,26 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TCPserver {
     private static final int BUFFER_SIZE = 4096;
     private ByteBuffer buffer;
 
     private static final String HOST = "localhost";
-    private static final int PORT = 5060;
+    private static final int PORT = 5252;
 
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
     private RequestHandler requestHandler;
 
     private Serializer<String, CommandDescription> serializer = new Serializer<>();
+    private final ExecutorService responseWritePool = Executors.newCachedThreadPool();
+    private final ExecutorService requestReadPool = Executors.newCachedThreadPool();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public TCPserver(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
@@ -80,7 +86,7 @@ public class TCPserver {
         ServerSocketChannel ssc = (ServerSocketChannel) key.channel();
         SocketChannel socketChannel = ssc.accept();
         socketChannel.configureBlocking(false);
-        //System.out.println("Подключенно: " + socketChannel.getRemoteAddress());
+        System.out.println("Подключенно: " + socketChannel.getRemoteAddress());
         socketChannel.register(selector, SelectionKey.OP_READ);
     }
     private void read(SelectionKey key) throws IOException {
@@ -100,15 +106,22 @@ public class TCPserver {
             return;
         }
         this.buffer.flip();
+        new Thread(() -> {
+                readWriteLock.readLock().lock();
+                try {
+                    AnswerRequests response = requestHandler.handleRequest(buffer);
+                    socketChannel.register(this.selector, SelectionKey.OP_WRITE, response);
+                    selector.wakeup();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    readWriteLock.readLock().unlock();
+                }
 
-        AnswerRequests response = requestHandler.handleRequest(buffer);
-        //System.out.println(response);
-        socketChannel.register(this.selector, SelectionKey.OP_WRITE, response);
+        }).start();
+
     }
     public void close() throws IOException {
-        SaveCommand saveCommand = new SaveCommand();
-        CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
-        saveCommand.execute(description);
         if (serverSocketChannel != null) {
             serverSocketChannel.close();
         }
@@ -117,12 +130,22 @@ public class TCPserver {
     private void write(SelectionKey key) throws IOException {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         AnswerRequests response = (AnswerRequests) key.attachment();
-        ByteBuffer writeBuffer = serializer.serializeObject(response);
-        writeBuffer.flip();
-        while (writeBuffer.hasRemaining()) {
-            socketChannel.write(writeBuffer);
-        }
-
+        responseWritePool.execute(() -> {
+            ByteBuffer writeBuffer = null;
+            try {
+                writeBuffer = serializer.serializeObject(response);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            writeBuffer.flip();
+            while (writeBuffer.hasRemaining()) {
+                try {
+                    socketChannel.write(writeBuffer);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         socketChannel.register(selector, SelectionKey.OP_READ);
     }
 }

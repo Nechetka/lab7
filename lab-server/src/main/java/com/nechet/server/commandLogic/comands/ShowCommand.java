@@ -5,6 +5,7 @@ import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
 import com.nechet.server.system.SpaceMarinesManager;
 
+import java.sql.SQLException;
 import java.util.TreeSet;
 
 public class ShowCommand implements BaseCommand{
@@ -20,7 +21,11 @@ public class ShowCommand implements BaseCommand{
         if (colMan.isEmpty()){
             result+="В коллекции нет объектов";
         } else {
-            colMan.getCollection().forEach(obj -> result+=obj.toString()+"\n");
+            try {
+                colMan.getCollection().forEach(obj -> result+=obj.toString()+"\n");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

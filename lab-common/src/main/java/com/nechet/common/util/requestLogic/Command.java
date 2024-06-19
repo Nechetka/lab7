@@ -18,8 +18,8 @@ public class Command {
         this.creator = creator;
         this.numb = numberOfObjects;
     }
-    public CommandDescription createDescription(String[] args) throws WrongValuesOfCommandArgumentException, CreateObjectException {
-        descr.setAll(args);
+    public CommandDescription createDescription(String[] args,String log,String password) throws WrongValuesOfCommandArgumentException, CreateObjectException {
+        descr.setAll(args,log,password);
         for (int i=0;i<numb;i++){
             descr.addObject(creator.create());
         }

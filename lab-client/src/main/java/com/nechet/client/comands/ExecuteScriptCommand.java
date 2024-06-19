@@ -45,7 +45,7 @@ public class ExecuteScriptCommand extends Command {
             console.printLine("Файл скрипта не найден.");
         }
         CommandDescription description =  new CommandDescription("execute_script",RequestArgumentType.STRING);
-        description.setAll(str);
+        description.setAll(str,Utils.getLogin(),Utils.getPassword());
         return  description;
     }
 }

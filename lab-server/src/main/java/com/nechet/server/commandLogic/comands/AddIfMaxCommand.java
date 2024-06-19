@@ -4,10 +4,12 @@ import com.nechet.common.util.model.SpaceMarine;
 import com.nechet.common.util.model.comparators.MarineDIstanceComparator;
 import com.nechet.common.util.requestLogic.CommandDescription;
 import com.nechet.server.system.CollectionReceiver;
+import com.nechet.server.system.SpaceMarinesDBManager;
 import com.nechet.server.system.SpaceMarinesManager;
 import com.nechet.server.system.Utils;
 
 
+import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.TreeSet;
 
@@ -17,7 +19,7 @@ public class AddIfMaxCommand implements BaseCommand{
 
     @Override
     public void execute(CommandDescription descr){
-        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = SpaceMarinesManager.getInstance();
+        CollectionReceiver<TreeSet<SpaceMarine>,SpaceMarine> colMan = new SpaceMarinesDBManager(descr.getLogin());
         SpaceMarine newMarine = descr.getObjectArray().get(0);
         newMarine.setId(Utils.getNewId());
         Comparator<SpaceMarine> comp = new MarineDIstanceComparator();
@@ -26,7 +28,11 @@ public class AddIfMaxCommand implements BaseCommand{
             result+="Введенный элемент был не максимальный.";
         }
         else{
-            colMan.addElementToCollection(newMarine);
+            try {
+                colMan.addElementToCollection(newMarine);
+            } catch (SQLException e) {
+                result+="Ошибка добавления объекта в базу";
+            }
             result+="Введенный элемент был максимальный и успешно добавлен в коллекцию.";
         }
     }

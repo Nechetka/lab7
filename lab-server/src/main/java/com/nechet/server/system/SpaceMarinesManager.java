@@ -74,7 +74,6 @@ public class SpaceMarinesManager implements CollectionReceiver<TreeSet<SpaceMari
         return getCollection().stream().max(comparator).orElse(null);
     }
 
-    @Override
     public boolean removeIf(Predicate<? super SpaceMarine> predicate) {
         return marines.removeIf(predicate);
     }

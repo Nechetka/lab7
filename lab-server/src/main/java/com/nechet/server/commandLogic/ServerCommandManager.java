@@ -38,6 +38,8 @@ public class ServerCommandManager {
         commands.put("remove_greater", new RemoveGreaterCommand());
         commands.put("remove_lower", new RemoveLowerCommand());
         commands.put("execute_script",new ExecuteScriptCommand());
+        commands.put("sign_in", new SignInCommand());
+        commands.put("sign_up",new SignUpCommand());
 
     }
     public AnswerRequests executer(CommandDescription descr) throws CommandManagerException {

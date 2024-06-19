@@ -15,9 +15,6 @@ public class ExitCommand implements BaseCommand{
 
         @Override
         public void execute(CommandDescription d) throws IOException {
-            SaveCommand saveCommand = new SaveCommand();
-            CommandDescription description = new CommandDescription("save", RequestArgumentType.NO_ARGS);
-            saveCommand.execute(description);
             result+="клиент закрыт";
         }
 
